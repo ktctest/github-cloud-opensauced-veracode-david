@@ -33,8 +33,6 @@ jobs:
     uses: ./.github/workflows/development.yml
 
   Veracode_SCA_Scan:
-    env:
-      ACTIONS_STEP_DEBUG: true
     runs-on: ubuntu-latest
     needs: setup
     name: "Veracode SCA Scan"
@@ -47,8 +45,6 @@ jobs:
         uses: veracode/veracode-sca@v2.1.9
 
   Veracode_SAST_Scan:
-    env:
-      ACTIONS_STEP_DEBUG: true
     runs-on: ubuntu-latest
     needs: setup
     name: "Veracode SAST Scan"
@@ -65,8 +61,8 @@ jobs:
         id: pipeline-scan
         uses: veracode/Veracode-pipeline-scan-action@v1.0.8
         with:
-          vid: "${{ secrets.VERACODE_API_ID }}"
-          vkey: "${{ secrets.VERACODE_API_KEY }}"
+          vid: "${{ secrets.VERACODE_API_KEY_ID }}"
+          vkey: "${{ secrets.VERACODE_API_KEY_SECRET }}"
           app_id: "Veracode_Demo"
           file: "test.zip"
 
