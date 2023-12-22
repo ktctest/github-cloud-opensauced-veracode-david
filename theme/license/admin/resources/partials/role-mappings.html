@@ -1,0 +1,46 @@
+<div class="col-sm-9 col-md-10 col-sm-push-3 col-md-push-2">
+    <ol class="breadcrumb">
+        <li><a href="#/realms/{{realm.realm}}/users">{{:: 'users' | translate}}</a></li>
+        <li>{{user.username}}</li>
+    </ol>
+
+    <kc-tabs-user></kc-tabs-user>
+
+    <form class="form-horizontal" name="realmForm" novalidate>
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="clients">{{:: 'client-roles' | translate}}</label>
+            <div class="col-md-6">
+                <input type="hidden" ui-select2="clientsUiSelect" id="clients" data-ng-model="selectedClient"
+                       data-ng-change="changeClient(selectedClient);"
+                       data-placeholder="{{:: 'authz-select-client' | translate}}...">
+                </input>
+            </div>
+
+            <div class="col-md-12" kc-read-only="!user.access.mapRoles">
+                <div data-ng-show="selectedClient">
+                    <table style="width: 100%">
+                        <thead>
+                        <tr>
+                            <th>{{:: 'role-name' | translate}}</th>
+                            <th>Zugewiesen</th>
+                            <th>Gültig bis</th>
+                            <th>Reseller ID</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="r in clientRoles.concat(clientMappings) | orderBy:'name'">
+                            <td style="width: 40%;">{{r.name}}</td>
+                            <td style="width: 10%;"><input ng-click="changeClientRole(r)" type="checkbox" ng-checked="inArray(clientMappings, r) || inArray(clientComposite, r)"/></td>
+                            <td style="width: 25%; padding-right: 1rem;"><input id="{{r.id + '_expiration'}}" ng-disabled="!inArray(clientMappings, r) && !inArray(clientComposite, r)" ng-value="extractExpirationDate(selectedClient.clientId, r.id)" type="date" style="width: 100%; margin-bottom: .5rem; padding: .5rem 1rem .5rem 1rem;"/></td>
+                            <td style="width: 25%;"><input id="{{r.id + '_reseller'}}" ng-disabled="!inArray(clientMappings, r) && !inArray(clientComposite, r)" ng-value="extractResellerID(selectedClient.clientId, r.id)" placeholder="KTC" style="width: 100%; margin-bottom: .5rem; padding: .5rem 1rem .5rem 1rem;"/></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <button kc-save ng-click="updateAdditionalAttributes(selectedClient.clientId)">{{:: 'save' | translate}}</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<kc-menu></kc-menu>
