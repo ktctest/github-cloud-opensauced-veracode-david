@@ -87,11 +87,11 @@ jobs:
       - name: Veracode Sandbox Scan
         uses: veracode/veracode-uploadandscan-action@0.2.6
         with:
-           appname: 'david-cicd-test'
+           appname: "david-cicd-test"
            scantimeout: 30
            scanpollinginterval: 30
-           createsandbox: true
-           sandboxname: TestGitHub
+           createsandbox: "true"
+           sandboxname: "TestGitHub"
            filepath: "test.zip"
            vid: "${{ secrets.VERACODE_API_KEY_ID }}"
            vkey: "${{ secrets.VERACODE_API_KEY_SECRET }}"
