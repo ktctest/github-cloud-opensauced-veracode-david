@@ -70,10 +70,6 @@ jobs:
     needs: Veracode_SAST_Scan
     runs-on: ubuntu-latest
     steps:
-      - name: look-for-test-zip1
-        run: ls -la
-      - name: look-for-test-zip1
-        run: whereis test.zip
       - name: checkout repo
         uses: actions/checkout@v3
 
@@ -87,6 +83,11 @@ jobs:
         with:
           scan-results-json: 'filtered_results.json'
           github-token: ${{ secrets.PRIVATE_TOKEN }}
+
+      - name: look-for-test-zip1
+        run: ls -la
+      - name: look-for-test-zip1
+        run: whereis test.zip
 
       - name: Veracode Sandbox Scan
         uses: veracode/veracode-uploadandscan-action@0.2.6
