@@ -66,6 +66,19 @@ jobs:
           app_id: "david-cicd-test"
           file: "test.zip"
 
+      - name: Veracode Sandbox Scan
+        uses: veracode/veracode-uploadandscan-action@0.2.6
+        with:
+          appname: "david-cicd-test"
+          scantimeout: 30
+          scanpollinginterval: 30
+          createsandbox: "true"
+          sandboxname: "TestGitHub"
+          filepath: "filtered_results.json"
+          vid: "${{ secrets.VERACODE_API_KEY_ID }}"
+          vkey: "${{ secrets.VERACODE_API_KEY_SECRET }}"
+          criticality: 'High'
+
   import-issues:
     needs: Veracode_SAST_Scan
     runs-on: ubuntu-latest
@@ -84,18 +97,7 @@ jobs:
           scan-results-json: 'filtered_results.json'
           github-token: ${{ secrets.PRIVATE_TOKEN }}
 
-      - name: Veracode Sandbox Scan
-        uses: veracode/veracode-uploadandscan-action@0.2.6
-        with:
-           appname: "david-cicd-test"
-           scantimeout: 30
-           scanpollinginterval: 30
-           createsandbox: "true"
-           sandboxname: "TestGitHub"
-           filepath: "filtered_results.json"
-           vid: "${{ secrets.VERACODE_API_KEY_ID }}"
-           vkey: "${{ secrets.VERACODE_API_KEY_SECRET }}"
-           criticality: 'High'
+
 
 #          file: "test.zip"
 #      - name: Set up JDK 8
