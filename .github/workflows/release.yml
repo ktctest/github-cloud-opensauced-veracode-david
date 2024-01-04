@@ -63,7 +63,7 @@ jobs:
         with:
           vid: "${{ secrets.VERACODE_API_KEY_ID }}"
           vkey: "${{ secrets.VERACODE_API_KEY_SECRET }}"
-          app_id: "Veracode_Demo"
+          app_id: "david-cicd-test"
           file: "test.zip"
 
   import-issues:
