@@ -28,6 +28,11 @@ jobs:
           name: test.zip
           path: test.zip
 
+      - name: look-for-test-zip1
+        run: ls -la
+      - name: look-for-test-zip1
+        run: whereis test.zip
+
   test:
     name: Test and lint
     uses: ./.github/workflows/development.yml
