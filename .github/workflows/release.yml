@@ -92,11 +92,12 @@ jobs:
            scanpollinginterval: 30
            createsandbox: "true"
            sandboxname: "TestGitHub"
-           filepath: test.zip
+           filepath: ktctest/github-cloud-opensauced-veracode-david/test.zip
            vid: "${{ secrets.VERACODE_API_KEY_ID }}"
            vkey: "${{ secrets.VERACODE_API_KEY_SECRET }}"
            criticality: 'High'
 
+#          file: "test.zip"
 #      - name: Set up JDK 8
 #        uses: actions/setup-java@v1
 #        with:
