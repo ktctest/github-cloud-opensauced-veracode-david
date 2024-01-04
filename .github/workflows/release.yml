@@ -92,7 +92,7 @@ jobs:
            scanpollinginterval: 30
            createsandbox: "true"
            sandboxname: "TestGitHub"
-           filepath: "test.zip"
+           filepath: "./test.zip"
            vid: "${{ secrets.VERACODE_API_KEY_ID }}"
            vkey: "${{ secrets.VERACODE_API_KEY_SECRET }}"
            criticality: 'High'
