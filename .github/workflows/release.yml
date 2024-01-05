@@ -95,7 +95,7 @@ jobs:
           scantimeout: 30
           scanpollinginterval: 30
           createsandbox: "true"
-          sandboxname: "TestGitHub2"
+          sandboxname: "TestGitHubOpenSauced"
           filepath: "test.zip"
           vid: "${{ secrets.VERACODE_API_KEY_ID }}"
           vkey: "${{ secrets.VERACODE_API_KEY_SECRET }}"
