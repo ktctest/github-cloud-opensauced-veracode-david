@@ -84,9 +84,10 @@ jobs:
           scan-results-json: 'filtered_results.json'
           github-token: ${{ secrets.PRIVATE_TOKEN }}
 
-      - uses: montudor/action-zip@v1
-      - name: Zip the directory
-        run: zip -r test.zip .
+      - name: get archive
+        uses: actions/download-artifact@v3
+        with:
+          name: test.zip
 
       - name: Veracode Sandbox Scan
         uses: veracode/veracode-uploadandscan-action@0.2.6
