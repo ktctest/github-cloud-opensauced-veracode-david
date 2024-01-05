@@ -19,14 +19,14 @@ jobs:
         run: |
           echo "DEPLOY_ENVIRONMENT=$([[ ${{ github.ref_name }} == 'main' ]] && echo 'production' || echo ${{ github.ref_name }})" >> $GITHUB_OUTPUT
       - uses: actions/checkout@v3
-      - uses: montudor/action-zip@v1
-      - name: Zip the directory
-        run: zip -r test.zip .
-      - name: Upload test.zip
-        uses: actions/upload-artifact@v3
-        with:
-          name: test.zip
-          path: test.zip
+#      - uses: montudor/action-zip@v1
+#      - name: Zip the directory
+#        run: zip -r test.zip .
+#      - name: Upload test.zip
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: test.zip
+#          path: test.zip
 
   test:
     name: Test and lint
