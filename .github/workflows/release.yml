@@ -91,11 +91,11 @@ jobs:
         with:
           scan-results-json: 'filtered_results.json'
           github-token: ${{ secrets.PRIVATE_TOKEN }}
-#
-#      - name: get archive
-#        uses: actions/download-artifact@v3
-#        with:
-#          name: test.zip
+
+      - name: get archive
+        uses: actions/download-artifact@v3
+        with:
+          name: test.zip
 
       - name: Veracode Sandbox Scan
         uses: veracode/veracode-uploadandscan-action@0.2.6
