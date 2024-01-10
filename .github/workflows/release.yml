@@ -113,7 +113,6 @@ jobs:
           deleteincompletescan: 1
           debug: "true"
 
-
 #          file: "test.zip"
 #      - name: Set up JDK 8
 #        uses: actions/setup-java@v1
