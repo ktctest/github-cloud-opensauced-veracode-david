@@ -44,13 +44,13 @@ jobs:
       - name: "checkout repo"
         uses: actions/checkout@v3
 
-      - name: "Zip the directory"
+      - name: "Zip directory"
         uses: montudor/action-zip@v1
         with:
           args: zip -r test.zip .
 
       - name: "Upload test.zip"
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3, montudor/action-zip@v1
         with:
           name: test.zip
           path: test.zip
@@ -63,8 +63,6 @@ jobs:
           vkey: "${{ secrets.VERACODE_API_KEY_SECRET }}"
           app_id: "david-cicd-test"
           file: "test.zip"
-
-
 
 
   sast-issues:
@@ -85,6 +83,13 @@ jobs:
         with:
           scan-results-json: 'filtered_results.json'
           github-token: ${{ secrets.PRIVATE_TOKEN }}
+
+
+  security-sandbox-scan:
+    name: "Veracode Sandbox Scan"
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
       - name: get archive
         uses: actions/download-artifact@v3
         with:
