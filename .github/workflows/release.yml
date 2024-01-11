@@ -44,7 +44,7 @@ jobs:
       - name: "checkout repo"
         uses: actions/checkout@v3
 
-      - name: "Zip the directory"
+      - name: "Zip directory"
         uses: montudor/action-zip@v1
         with:
           args: zip -r test.zip .
@@ -65,8 +65,6 @@ jobs:
           file: "test.zip"
 
 
-
-
   sast-issues:
     name: "SAST Results to Issues"
     needs: [security_sca, security_sast]
@@ -85,6 +83,13 @@ jobs:
         with:
           scan-results-json: 'filtered_results.json'
           github-token: ${{ secrets.PRIVATE_TOKEN }}
+
+
+  security-sandbox-scan:
+    name: "Veracode Sandbox Scan"
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
       - name: get archive
         uses: actions/download-artifact@v3
         with:
