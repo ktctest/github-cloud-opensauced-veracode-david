@@ -19,14 +19,6 @@ jobs:
         run: |
           echo "DEPLOY_ENVIRONMENT=$([[ ${{ github.ref_name }} == 'main' ]] && echo 'production' || echo ${{ github.ref_name }})" >> $GITHUB_OUTPUT
       - uses: actions/checkout@v3
-#      - uses: montudor/action-zip@v1
-#      - name: Zip the directory
-#        run: zip -r test.zip .
-#      - name: Upload test.zip
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: test.zip
-#          path: test.zip
 
   test:
     name: Test and lint
@@ -51,9 +43,7 @@ jobs:
     steps:
       - name: checkout repo
         uses: actions/checkout@v3
-
       - uses: montudor/action-zip@v1
-
       - name: Zip the directory
         run: zip -r test.zip .
       - name: Upload test.zip
@@ -61,7 +51,6 @@ jobs:
         with:
           name: test.zip
           path: test.zip
-
       - name: pipeline-scan action step
         id: pipeline-scan
         uses: veracode/Veracode-pipeline-scan-action@v1.0.8
@@ -77,23 +66,19 @@ jobs:
     steps:
       - name: checkout repo
         uses: actions/checkout@v3
-
       - name: get scan results
         uses: actions/download-artifact@v3
         with:
           name: 'Veracode Pipeline-Scan Results'
-
       - name: import flaws as issues
         uses: veracode/veracode-flaws-to-issues@v2.1.19
         with:
           scan-results-json: 'filtered_results.json'
           github-token: ${{ secrets.PRIVATE_TOKEN }}
-
       - name: get archive
         uses: actions/download-artifact@v3
         with:
           name: test.zip
-
       - name: Veracode Sandbox Scan
         uses: veracode/veracode-uploadandscan-action@0.2.6
         with:
@@ -101,7 +86,7 @@ jobs:
           scantimeout: 30
           scanpollinginterval: 120
           createsandbox: "true"
-#          sandboxname: "TestGitHubOpenSauced"
+          sandboxname: "TestGitHubOpenSauced"
           filepath: "test.zip"
           vid: "${{ secrets.VERACODE_API_KEY_ID }}"
           vkey: "${{ secrets.VERACODE_API_KEY_SECRET }}"
