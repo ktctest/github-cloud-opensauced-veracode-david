@@ -53,9 +53,8 @@ jobs:
           app_id: "david-cicd-test"
           file: "test.zip"
 
-
+      - uses: montudor/action-zip@v1
       - name: "Zip the directory"
-        uses: montudor/action-zip@v1
         run: zip -r test.zip .
 
       - name: Upload test.zip
