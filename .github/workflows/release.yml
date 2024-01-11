@@ -44,6 +44,17 @@ jobs:
       - name: "checkout repo"
         uses: actions/checkout@v3
 
+      - name: "Zip the directory"
+        uses: montudor/action-zip@v1
+        with:
+          args: zip -r test.zip .
+
+      - name: "Upload test.zip"
+        uses: actions/upload-artifact@v3
+        with:
+          name: test.zip
+          path: test.zip
+
       - name: "pipeline-scan action step"
         id: pipeline-scan
         uses: veracode/Veracode-pipeline-scan-action@v1.0.8
@@ -53,15 +64,7 @@ jobs:
           app_id: "david-cicd-test"
           file: "test.zip"
 
-      - uses: montudor/action-zip@v1
-      - name: "Zip the directory"
-        run: zip -r test.zip .
 
-      - name: Upload test.zip
-        uses: actions/upload-artifact@v3
-        with:
-          name: test.zip
-          path: test.zip
 
 
   sast-issues:
