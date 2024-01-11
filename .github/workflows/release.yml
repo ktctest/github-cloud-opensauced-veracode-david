@@ -50,7 +50,7 @@ jobs:
           args: zip -r test.zip .
 
       - name: "Upload test.zip"
-        uses: actions/upload-artifact@v3, montudor/action-zip@v1
+        uses: actions/upload-artifact@v3
         with:
           name: test.zip
           path: test.zip
