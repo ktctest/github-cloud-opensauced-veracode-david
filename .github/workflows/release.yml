@@ -51,7 +51,9 @@ jobs:
     steps:
       - name: checkout repo
         uses: actions/checkout@v3
+
       - uses: montudor/action-zip@v1
+
       - name: Zip the directory
         run: zip -r test.zip .
       - name: Upload test.zip
@@ -59,11 +61,6 @@ jobs:
         with:
           name: test.zip
           path: test.zip
-
-#      - name: get archive
-#        uses: actions/download-artifact@v3
-#        with:
-#          name: test.zip
 
       - name: pipeline-scan action step
         id: pipeline-scan
@@ -102,9 +99,9 @@ jobs:
         with:
           appname: "david-cicd-test"
           scantimeout: 30
-          scanpollinginterval: 30
+          scanpollinginterval: 120
           createsandbox: "true"
-          sandboxname: "TestGitHubOpenSauced"
+#          sandboxname: "TestGitHubOpenSauced"
           filepath: "test.zip"
           vid: "${{ secrets.VERACODE_API_KEY_ID }}"
           vkey: "${{ secrets.VERACODE_API_KEY_SECRET }}"
