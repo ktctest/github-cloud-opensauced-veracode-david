@@ -20,6 +20,17 @@ jobs:
           echo "DEPLOY_ENVIRONMENT=$([[ ${{ github.ref_name }} == 'main' ]] && echo 'production' || echo ${{ github.ref_name }})" >> $GITHUB_OUTPUT
       - uses: actions/checkout@v3
 
+      - name: "Zip directory"
+        uses: montudor/action-zip@v1
+        with:
+          args: zip -r test.zip .
+
+      - name: "Upload test.zip"
+        uses: actions/upload-artifact@v3
+        with:
+          name: test.zip
+          path: test.zip
+
   test:
     name: "Test and lint"
     uses: ./.github/workflows/development.yml
@@ -29,9 +40,9 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: "checkout repo"
         uses: actions/checkout@v3
-      - name: Run Veracode SCA
+      - name: "run Veracode SCA"
         env:
           SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
         uses: veracode/veracode-sca@v2.1.9
@@ -44,20 +55,9 @@ jobs:
       - name: "checkout repo"
         uses: actions/checkout@v3
 
-      - name: "Zip directory"
-        uses: montudor/action-zip@v1
-        with:
-          args: zip -r test.zip .
-
-      - name: "Upload test.zip"
-        uses: actions/upload-artifact@v3
-        with:
-          name: test.zip
-          path: test.zip
-
-      - name: "pipeline-scan action step"
+      - name: "run Veracode SAST"
         id: pipeline-scan
-        uses: veracode/Veracode-pipeline-scan-action@v1.0.8
+        uses: veracode/Veracode-pipeline-scan-action@v1.0.11
         with:
           vid: "${{ secrets.VERACODE_API_KEY_ID }}"
           vkey: "${{ secrets.VERACODE_API_KEY_SECRET }}"
@@ -67,13 +67,15 @@ jobs:
 
   sast-issues:
     name: "SAST Results to Issues"
-    needs: [security_sca, security_sast]
+    needs:
+    - security_sca
+    - security_sast
     runs-on: ubuntu-latest
     steps:
-      - name: checkout repo
+      - name: "checkout repo"
         uses: actions/checkout@v3
 
-      - name: get scan results
+      - name: "get scan results"
         uses: actions/download-artifact@v3
         with:
           name: 'Veracode Pipeline-Scan Results'
@@ -99,7 +101,7 @@ jobs:
         with:
           appname: "david-cicd-test"
           scantimeout: 30
-          scanpollinginterval: 120
+          scanpollinginterval: 60
           createsandbox: "true"
           sandboxname: "TestGitHubOpenSauced"
           filepath: "test.zip"
@@ -107,7 +109,6 @@ jobs:
           vkey: "${{ secrets.VERACODE_API_KEY_SECRET }}"
           criticality: 'High'
           deleteincompletescan: 1
-          debug: "true"
 
 
   docker:
