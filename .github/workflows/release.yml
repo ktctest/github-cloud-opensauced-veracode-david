@@ -55,6 +55,11 @@ jobs:
       - name: "checkout repo"
         uses: actions/checkout@v3
 
+      - name: "get archive"
+        uses: actions/download-artifact@v3
+        with:
+          name: test.zip
+
       - name: "run Veracode SAST"
         id: pipeline-scan
         uses: veracode/Veracode-pipeline-scan-action@v1.0.11
