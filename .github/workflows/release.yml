@@ -47,36 +47,33 @@ jobs:
           SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
         uses: veracode/veracode-sca@v2.1.9
 
+  security_sast:
+    name: "Veracode SAST Scan"
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: "checkout repo"
+        uses: actions/checkout@v3
 
-#  security_sast:
-#    name: "Veracode SAST Scan"
-#    needs: setup
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: "checkout repo"
-#        uses: actions/checkout@v3
-#
-#      - name: "get archive"
-#        uses: actions/download-artifact@v3
-#        with:
-#          name: test.zip
-#
-#      - name: "run Veracode SAST"
-#        id: pipeline-scan
-#        uses: veracode/Veracode-pipeline-scan-action@v1.0.11
-#        with:
-#          vid: "${{ secrets.VERACODE_API_KEY_ID }}"
-#          vkey: "${{ secrets.VERACODE_API_KEY_SECRET }}"
-#          app_id: "david-cicd-test"
-#          file: "test.zip"
+      - name: "get archive"
+        uses: actions/download-artifact@v3
+        with:
+          name: test.zip
 
-
+      - name: "run Veracode SAST"
+        id: pipeline-scan
+        uses: veracode/Veracode-pipeline-scan-action@v1.0.11
+        with:
+          vid: "${{ secrets.VERACODE_API_KEY_ID }}"
+          vkey: "${{ secrets.VERACODE_API_KEY_SECRET }}"
+          app_id: "david-cicd-test"
+          file: "test.zip"
 
   sast-issues:
     name: "SAST Results to Issues"
     needs:
     - security_sca
-#    - security_sast
+    - security_sast
     runs-on: ubuntu-latest
     steps:
       - name: "checkout repo"
@@ -92,31 +89,6 @@ jobs:
         with:
           scan-results-json: 'filtered_results.json'
           github-token: ${{ secrets.PRIVATE_TOKEN }}
-
-
-#  security-sandbox-scan:
-#    name: "Veracode Sandbox Scan"
-#    needs: setup
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: get archive
-#        uses: actions/download-artifact@v3
-#        with:
-#          name: test.zip
-#      - name: Veracode Sandbox Scan
-#        uses: veracode/veracode-uploadandscan-action@0.2.6
-#        with:
-#          appname: "david-cicd-test"
-#          scantimeout: 30
-#          scanpollinginterval: 60
-#          createsandbox: "true"
-#          sandboxname: "TestGitHubOpenSauced"
-#          filepath: "test.zip"
-#          vid: "${{ secrets.VERACODE_API_KEY_ID }}"
-#          vkey: "${{ secrets.VERACODE_API_KEY_SECRET }}"
-#          criticality: 'High'
-#          deleteincompletescan: 1
-
 
   docker:
     name: Build container
