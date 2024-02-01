@@ -72,7 +72,7 @@ jobs:
   sast-issues:
     name: "SAST Results to Issues"
     needs:
-    - security_sca
+#    - security_sca
     - security_sast
     runs-on: ubuntu-latest
     steps:
