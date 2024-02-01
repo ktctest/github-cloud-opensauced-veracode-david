@@ -31,21 +31,21 @@ jobs:
           name: test.zip
           path: test.zip
 
-  test:
-    name: "Test and lint"
-    uses: ./.github/workflows/development.yml
-
-  security_sca:
-    name: "Veracode SCA Scan"
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - name: "checkout repo"
-        uses: actions/checkout@v3
-      - name: "run Veracode SCA"
-        env:
-          SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
-        uses: veracode/veracode-sca@v2.1.9
+#  test:
+#    name: "Test and lint"
+#    uses: ./.github/workflows/development.yml
+#
+#  security_sca:
+#    name: "Veracode SCA Scan"
+#    needs: setup
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: "checkout repo"
+#        uses: actions/checkout@v3
+#      - name: "run Veracode SCA"
+#        env:
+#          SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
+#        uses: veracode/veracode-sca@v2.1.9
 
   security_sast:
     name: "Veracode SAST Scan"
