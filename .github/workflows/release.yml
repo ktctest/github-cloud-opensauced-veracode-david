@@ -65,7 +65,7 @@ jobs:
           path: test.zip
       - name: "pipeline-scan action step"
         id: pipeline-scan
-        uses: veracode/Veracode-pipeline-scan-action@v1.0.11
+        uses: veracode/veracode-uploadandscan-action@0.2.6
         with:
           vid: "${{ secrets.VERACODE_API_KEY_ID }}"
           vkey: "${{ secrets.VERACODE_API_KEY_SECRET }}"
