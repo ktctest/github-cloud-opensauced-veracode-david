@@ -68,8 +68,8 @@ jobs:
           filepath: 'test.zip'
           deleteincompletescan: 2
           scanpollinginterval: 60
-          vid: "${{ secrets.VERACODE_API_KEY_ID }}"
-          vkey: "${{ secrets.VERACODE_API_KEY_SECRET }}"
+          vid: "${{ secrets.VERACODE_API_ID }}"
+          vkey: "${{ secrets.VERACODE_API_KEY }}"
 #          app_id: "david-cicd-test"
   #  security_sast:
   #    name: "Veracode SAST Scan"
