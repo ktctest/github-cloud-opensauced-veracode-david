@@ -70,28 +70,6 @@ jobs:
           scanpollinginterval: 60
           vid: "${{ secrets.VERACODE_API_ID }}"
           vkey: "${{ secrets.VERACODE_API_KEY }}"
-#          app_id: "david-cicd-test"
-  #  security_sast:
-  #    name: "Veracode SAST Scan"
-  #    needs: setup
-  #    runs-on: ubuntu-latest
-  #    steps:
-  #      - name: "checkout repo"
-  #        uses: actions/checkout@v3
-  #
-  #      - name: "get archive"
-  #        uses: actions/download-artifact@v3
-  #        with:
-  #          name: test.zip
-  #
-  #      - name: "run Veracode SAST"
-  #        id: pipeline-scan
-  #        uses: veracode/Veracode-pipeline-scan-action@v1.0.11
-  #        with:
-  #          vid: "${{ secrets.VERACODE_API_KEY_ID }}"
-  #          vkey: "${{ secrets.VERACODE_API_KEY_SECRET }}"
-  #          app_id: "david-cicd-test"
-  #          file: "test.zip"
 
   sast-issues:
     name: "SAST Results to Issues"
