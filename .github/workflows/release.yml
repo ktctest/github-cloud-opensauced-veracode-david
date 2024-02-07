@@ -74,12 +74,6 @@ jobs:
          --veracode_api_key "${{secrets.VERACODE_API_KEY}}"
          --file "test.zip"
          --fail_on_severity="Very High, High, Medium"
-      - name: import flaws as issues
-        uses: veracode/veracode-flaws-to-issues@v2.1.19
-        with:
-          scan-results-json: 'filtered_results.json'
-          github-token: ${{ secrets.PRIVATE_TOKEN }}
-
 
   # is actually sandbox
   #  security_sast:
@@ -108,9 +102,8 @@ jobs:
 
   sast-issues:
     name: "SAST Results to Issues"
-    needs:
-      - security_sca
-      - security_sast
+    needs: [security_sca, security_sast]
+    if: ${{ always()  }}
     runs-on: ubuntu-latest
     steps:
       - name: "checkout repo"
