@@ -29,7 +29,7 @@ jobs:
 
         uses: montudor/action-zip@v1
         with:
-          args: war -r test.zip .
+          args: zip -r test.zip .
       # upload project for SAST scan
       - name: "Upload test.zip"
         uses: actions/upload-artifact@v3
