@@ -69,7 +69,7 @@ jobs:
        with:
          args: -fsS https://tools.veracode.com/veracode-cli/install | sh
      - name: "Run a static scan"
-       run: ./veracode static scan verademo.war
+       run: ./veracode static scan test.zip
        env:
           VERACODE_API_KEY_ID: ${{ secrets.VERACODE_API_ID }}
           VERACODE_API_KEY_SECRET: ${{ secrets.VERACODE_API_KEY }}
