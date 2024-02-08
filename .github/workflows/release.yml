@@ -77,7 +77,7 @@ jobs:
        if: ${{ always()  }}
        uses: veracode/veracode-flaws-to-issues@v2.1.19
        with:
-         scan-results-json: 'filtered_results.json'
+         scan-results-json: 'results.json'
          github-token: ${{ secrets.PRIVATE_TOKEN }}
 
 #    steps:
