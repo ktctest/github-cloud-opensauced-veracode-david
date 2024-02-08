@@ -23,13 +23,13 @@ jobs:
       - name: "Zip directory"
         uses: montudor/action-zip@v1
         with:
-          args: zip -r test.zip .
+          args: war -r test.war .
       # upload project for SAST scan
       - name: "Upload test.zip"
         uses: actions/upload-artifact@v3
         with:
-          name: test.zip
-          path: test.zip
+          name: test.war
+          path: test.war
 
   test:
     name: "Test and lint"
@@ -63,7 +63,7 @@ jobs:
        with:
          args: -fsS https://tools.veracode.com/veracode-cli/install | sh
      - name: "Run a static scan"
-       run: ./test.zip
+       run: ./test.war
        env:
           VERACODE_API_KEY_ID: ${{ secrets.VERACODE_API_ID }}
           VERACODE_API_KEY_SECRET: ${{ secrets.VERACODE_API_KEY }}
