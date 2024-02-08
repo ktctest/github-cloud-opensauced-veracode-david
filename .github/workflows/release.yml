@@ -10,7 +10,7 @@ on:
 jobs:
   setup:
     name: "Set environment variables"
-    runs-on: ubuntu-latest
+    runs-on: veracode/pipeline-scan:latest
     outputs:
       DEPLOY_ENVIRONMENT: ${{ steps.env.outputs.DEPLOY_ENVIRONMENT }}
     steps:
@@ -38,7 +38,7 @@ jobs:
   security_sca:
     name: "Veracode SCA Scan"
     needs: setup
-    runs-on: ubuntu-latest
+    runs-on: veracode/pipeline-scan:latest
     steps:
       - name: "checkout repo"
         uses: actions/checkout@v3
@@ -50,7 +50,7 @@ jobs:
   security_sast:
     name: "Veracode SAST Scan"
     needs: setup
-    runs-on: ubuntu-latest
+    runs-on: veracode/pipeline-scan:latest
     steps:
       - name: "checkout repo"
         uses: actions/checkout@v3
@@ -79,7 +79,7 @@ jobs:
     name: "SAST Results to Issues"
     needs: [security_sca, security_sast]
     if: ${{ always()  }}
-    runs-on: ubuntu-latest
+    runs-on: veracode/pipeline-scan:latest
     steps:
       - name: "checkout repo"
         uses: actions/checkout@v3
