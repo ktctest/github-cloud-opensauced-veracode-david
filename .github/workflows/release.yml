@@ -62,7 +62,7 @@ jobs:
      - name: "get archive"
        uses: actions/download-artifact@v3
        with:
-         name: "test.zip"
+         name: "test.war"
      - name: "Download Veracode CLI"
        uses: wei/curl@master
        with:
