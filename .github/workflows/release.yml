@@ -12,7 +12,7 @@ jobs:
     name: "Set environment variables"
     runs-on: ubuntu-latest
     container:
-      image: veracode/pipeline-scan
+      image: hub.docker.com/r/veracode/pipeline-scan
     outputs:
       DEPLOY_ENVIRONMENT: ${{ steps.env.outputs.DEPLOY_ENVIRONMENT }}
     steps:
@@ -42,7 +42,7 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     container:
-      image: veracode/pipeline-scan
+      image: hub.docker.com/r/veracode/pipeline-scan
     steps:
       - name: "docker"
         uses: docker/
@@ -58,7 +58,7 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     container:
-      image: veracode/pipeline-scan
+      image: hub.docker.com/r/veracode/pipeline-scan
     steps:
       - name: "checkout repo"
         uses: actions/checkout@v3
@@ -89,7 +89,7 @@ jobs:
     if: ${{ always()  }}
     runs-on: ubuntu-latest
     container:
-      image: veracode/pipeline-scan
+      image: hub.docker.com/r/veracode/pipeline-scan
     steps:
       - name: "checkout repo"
         uses: actions/checkout@v3
@@ -109,7 +109,7 @@ jobs:
     name: Build container
     runs-on: ubuntu-latest
     container:
-      image: veracode/pipeline-scan
+      image: hub.docker.com/r/veracode/pipeline-scan
     steps:
       - name: "☁️ checkout repository"
         uses: actions/checkout@v3
@@ -153,7 +153,7 @@ jobs:
     name: Build application
     runs-on: ubuntu-latest
     container:
-      image: veracode/pipeline-scan
+      image: hub.docker.com/r/veracode/pipeline-scan
     steps:
       - name: "☁️ checkout repository"
         uses: actions/checkout@v3
@@ -205,7 +205,7 @@ jobs:
       - build
     runs-on: ubuntu-latest
     container:
-      image: veracode/pipeline-scan
+      image: hub.docker.com/r/veracode/pipeline-scan
     steps:
       - name: "☁️ checkout repository"
         uses: actions/checkout@v3
@@ -251,7 +251,7 @@ jobs:
       - release
     runs-on: ubuntu-latest
     container:
-      image: veracode/pipeline-scan
+      image: hub.docker.com/r/veracode/pipeline-scan
     steps:
       - name: "♻️ remove build artifacts"
         uses: geekyeggo/delete-artifact@v2
