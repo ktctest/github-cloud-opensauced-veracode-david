@@ -73,6 +73,12 @@ jobs:
        env:
           VERACODE_API_KEY_ID: ${{ secrets.VERACODE_API_ID }}
           VERACODE_API_KEY_SECRET: ${{ secrets.VERACODE_API_KEY }}
+     - name: import flaws as issues
+       if: ${{ always()  }}
+       uses: veracode/veracode-flaws-to-issues@v2.1.19
+       with:
+         scan-results-json: 'filtered_results.json'
+         github-token: ${{ secrets.PRIVATE_TOKEN }}
 
 #    steps:
 #      - name: "checkout repo"
