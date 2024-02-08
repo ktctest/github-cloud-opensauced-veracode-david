@@ -40,8 +40,6 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - name: "docker"
-        uses: docker/
       - name: "checkout repo"
         uses: actions/checkout@v3
       - name: "run Veracode SCA"
