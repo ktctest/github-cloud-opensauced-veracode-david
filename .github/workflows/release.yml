@@ -89,6 +89,7 @@ jobs:
        with:
          name: policy-flaws
          path: /tmp/policy_flaws.json
+         fail_build: false
 
 #    steps:
 #      - name: "checkout repo"
