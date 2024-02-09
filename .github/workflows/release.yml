@@ -82,7 +82,7 @@ jobs:
 
   # This step will import flaws from the step above
   import-policy-flaws:
-    needs: get-policy-flaws
+    needs: "security_sast"
     runs-on: ubuntu-latest
     permissions:
       issues: write
