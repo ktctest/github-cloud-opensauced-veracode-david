@@ -59,11 +59,22 @@ jobs:
     container:
       image: veracode/api-signing:latest
     steps:
+#      add github static scan
+      - name: "Download Veracode CLI"
+        uses: wei/curl@master
+        with:
+          args: -fsS https://tools.veracode.com/veracode-cli/install | sh
+      - name: Run a static scan
+        run: ./veracode static scan verademo.war
+        env:
+          VERACODE_API_KEY_ID: ${{ secrets.myVeracodeId }}
+          VERACODE_API_KEY_SECRET: ${{ secrets.myVeracodeSecret }}
+#       add import flaws
       # Note: this will only work up to about 500 flaws
       #		due to Veracode results limiting
       # See the get_flaws.sh script in the helpers directory
       #		for a more elaborate method
-      - name: get policy flaws
+      - name: "get policy flaws"
         run: |
           cd /tmp
           export VERACODE_API_KEY_ID=${{ secrets.VERACODE_API_ID }}
@@ -74,7 +85,7 @@ jobs:
           echo TOTAL_FLAWS: ${total_flaws}
           http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=STATIC&violates_policy=True&size=${total_flaws}" > policy_flaws.json
 
-      - name: save results file
+      - name: "save results file"
         uses: actions/upload-artifact@v3
         with:
           name: policy-flaws
