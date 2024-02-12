@@ -57,8 +57,8 @@ jobs:
     name: "Veracode SAST Scan"
     needs: setup
     runs-on: ubuntu-latest
-    container:
-      image: veracode/api-signing:latest
+#    container:
+#      image: veracode/api-signing:latest
     steps:
       #      add github static scan
       - name: "checkout repo"
