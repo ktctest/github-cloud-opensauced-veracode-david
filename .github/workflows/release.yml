@@ -55,6 +55,7 @@ jobs:
 
   security_sast:
     name: "Veracode SAST Scan"
+    needs: setup
     runs-on: ubuntu-latest
     container:
       image: veracode/api-signing:latest
