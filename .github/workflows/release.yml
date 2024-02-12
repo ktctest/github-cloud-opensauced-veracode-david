@@ -57,64 +57,81 @@ jobs:
     name: "Veracode SAST Scan"
     needs: setup
     runs-on: ubuntu-latest
-#    container:
-#      image: veracode/api-signing:latest
     steps:
-      #      add github static scan
-      - name: "checkout repo"
+      - name: Checkout
         uses: actions/checkout@v3
-      - name: "get archive"
-        uses: actions/download-artifact@v3
+      - name: create new package-lock.json
+        run: npm install
+      - name: ZIP source folder
+        run: zip -r app.zip src package-lock.json
+      - name: Run Veracode Policy scan
+        uses: veracode/veracode-uploadandscan-action@0.2.6
         with:
-          name: "test.zip"
-      - name: "Download Veracode CLI"
-        uses: wei/curl@master
-        with:
-          args: -fsS https://tools.veracode.com/veracode-cli/install | sh
-      - name: "Run a static scan"
-        run: ./veracode static scan test.zip
-        env:
-          VERACODE_API_KEY_ID: ${{ secrets.VERACODE_API_ID }}
-          VERACODE_API_KEY_SECRET: ${{ secrets.VERACODE_API_KEY }}
-      #       add import flaws
-      # Note: this will only work up to about 500 flaws
-      #		due to Veracode results limiting
-      # See the get_flaws.sh script in the helpers directory
-      #		for a more elaborate method
-      - name: "get policy flaws"
-        run: |
-          cd /tmp
-          export VERACODE_API_KEY_ID=${{ secrets.VERACODE_API_ID }}
-          export VERACODE_API_KEY_SECRET=${{ secrets.VERACODE_API_KEY }}
-          guid=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v1/applications?name=david-cicd-test" | jq -r '._embedded.applications[0].guid') 
-          echo GUID: ${guid}
-          total_flaws=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=STATIC&violates_policy=True" | jq -r '.page.total_elements')
-          echo TOTAL_FLAWS: ${total_flaws}
-          http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=STATIC&violates_policy=True&size=${total_flaws}" > policy_flaws.json
+          appname: 'GitHub Pipeline Scan to Sarif Action'
+          createprofile: false
+          filepath: 'app.zip'
+          scantimeout: 30
+          vid: '${{ secrets.API_ID }}'
+          vkey: '${{ secrets.API_KEY }}'
 
-      - name: "save results file"
-        uses: actions/upload-artifact@v3
-        with:
-          name: policy-flaws
-          path: /tmp/policy_flaws.json
-
-  # This step will import flaws from the step above
-  import-policy-flaws:
-    needs: "security_sast"
-    runs-on: ubuntu-latest
-    permissions:
-      issues: write
-    steps:
-      - name: get flaw file
-        uses: actions/download-artifact@v3
-        with:
-          name: policy-flaws
-          path: /tmp
-
-      - name: import flaws as issues
-        uses: veracode/veracode-flaws-to-issues@v2.1.19
-        with:
-          scan-results-json: '/tmp/policy_flaws.json'
+##    container:
+##      image: veracode/api-signing:latest
+#    steps:
+#      #      add github static scan
+#      - name: "checkout repo"
+#        uses: actions/checkout@v3
+#      - name: "get archive"
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: "test.zip"
+#      - name: "Download Veracode CLI"
+#        uses: wei/curl@master
+#        with:
+#          args: -fsS https://tools.veracode.com/veracode-cli/install | sh
+#      - name: "Run a static scan"
+#        run: ./veracode static scan test.zip
+#        env:
+#          VERACODE_API_KEY_ID: ${{ secrets.VERACODE_API_ID }}
+#          VERACODE_API_KEY_SECRET: ${{ secrets.VERACODE_API_KEY }}
+#      #       add import flaws
+#      # Note: this will only work up to about 500 flaws
+#      #		due to Veracode results limiting
+#      # See the get_flaws.sh script in the helpers directory
+#      #		for a more elaborate method
+#      - name: "get policy flaws"
+#        run: |
+#          cd /tmp
+#          export VERACODE_API_KEY_ID=${{ secrets.VERACODE_API_ID }}
+#          export VERACODE_API_KEY_SECRET=${{ secrets.VERACODE_API_KEY }}
+#          guid=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v1/applications?name=david-cicd-test" | jq -r '._embedded.applications[0].guid')
+#          echo GUID: ${guid}
+#          total_flaws=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=STATIC&violates_policy=True" | jq -r '.page.total_elements')
+#          echo TOTAL_FLAWS: ${total_flaws}
+#          http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=STATIC&violates_policy=True&size=${total_flaws}" > policy_flaws.json
+#
+#      - name: "save results file"
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: policy-flaws
+#          path: /tmp/policy_flaws.json
+#
+#  # This step will import flaws from the step above
+#  import-policy-flaws:
+#    needs: "security_sast"
+#    runs-on: ubuntu-latest
+#    permissions:
+#      issues: write
+#    steps:
+#      - name: get flaw file
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: policy-flaws
+#          path: /tmp
+#
+#      - name: import flaws as issues
+#        uses: veracode/veracode-flaws-to-issues@v2.1.19
+#        with:
+#          scan-results-json: '/tmp/policy_flaws.json'
 
 
   #security_sast:
