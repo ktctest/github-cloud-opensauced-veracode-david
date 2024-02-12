@@ -21,11 +21,11 @@ jobs:
       - uses: actions/checkout@v3
       # zip project for SAST Scan
       - name: "Zip directory"
-#        run: sudo apt-get update -qy
-#      - name: install zip
-#        run: sudo apt-get install -y zip unzip
-#      - name: zip it
-#        run: zip -R test.zip '*.py' '*.html' '*.htm' '*.js' '*.php' 'requirements.txt' '*.json' '*.lock' '*.ts' '*.pl' '*.pm' '*.plx' '*.pl5' '*.cgi' '*.go' '*.sum' '*.mod'
+        #        run: sudo apt-get update -qy
+        #      - name: install zip
+        #        run: sudo apt-get install -y zip unzip
+        #      - name: zip it
+        #        run: zip -R test.zip '*.py' '*.html' '*.htm' '*.js' '*.php' 'requirements.txt' '*.json' '*.lock' '*.ts' '*.pl' '*.pm' '*.plx' '*.pl5' '*.cgi' '*.go' '*.sum' '*.mod'
 
         uses: montudor/action-zip@v1
         with:
@@ -60,17 +60,23 @@ jobs:
     container:
       image: veracode/api-signing:latest
     steps:
-#      add github static scan
+      #      add github static scan
+      - name: "checkout repo"
+        uses: actions/checkout@v3
+      - name: "get archive"
+        uses: actions/download-artifact@v3
+        with:
+          name: "test.zip"
       - name: "Download Veracode CLI"
         uses: wei/curl@master
         with:
           args: -fsS https://tools.veracode.com/veracode-cli/install | sh
-      - name: Run a static scan
-        run: ./veracode static scan verademo.war
+      - name: "Run a static scan"
+        run: ./veracode static scan test.zip
         env:
-          VERACODE_API_KEY_ID: ${{ secrets.myVeracodeId }}
-          VERACODE_API_KEY_SECRET: ${{ secrets.myVeracodeSecret }}
-#       add import flaws
+          VERACODE_API_KEY_ID: ${{ secrets.VERACODE_API_ID }}
+          VERACODE_API_KEY_SECRET: ${{ secrets.VERACODE_API_KEY }}
+      #       add import flaws
       # Note: this will only work up to about 500 flaws
       #		due to Veracode results limiting
       # See the get_flaws.sh script in the helpers directory
@@ -111,61 +117,61 @@ jobs:
           scan-results-json: '/tmp/policy_flaws.json'
 
 
-#security_sast:
-#    name: "Veracode SAST Scan"
-#    needs: setup
-#    runs-on: ubuntu-latest
-#    steps:
-#     - name: "checkout repo"
-#       uses: actions/checkout@v3
-#     - name: "get archive"
-#       uses: actions/download-artifact@v3
-#       with:
-#         name: "test.zip"
-#     - name: "Download Veracode CLI"
-#       uses: wei/curl@master
-#       with:
-#         args: -fsS https://tools.veracode.com/veracode-cli/install | sh
-#     - name: "Run a static scan"
-#       run: ./veracode static scan test.zip
-#       env:
-#          VERACODE_API_KEY_ID: ${{ secrets.VERACODE_API_ID }}
-#          VERACODE_API_KEY_SECRET: ${{ secrets.VERACODE_API_KEY }}
-#     - name: import flaws as issues
-#       if: ${{ always()  }}
-#       uses: veracode/veracode-flaws-to-issues@v2.1.19
-#       with:
-#         scan-results-json: 'filtered_results.json'
-#         github-token: ${{ secrets.PRIVATE_TOKEN }}
+  #security_sast:
+  #    name: "Veracode SAST Scan"
+  #    needs: setup
+  #    runs-on: ubuntu-latest
+  #    steps:
+  #     - name: "checkout repo"
+  #       uses: actions/checkout@v3
+  #     - name: "get archive"
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: "test.zip"
+  #     - name: "Download Veracode CLI"
+  #       uses: wei/curl@master
+  #       with:
+  #         args: -fsS https://tools.veracode.com/veracode-cli/install | sh
+  #     - name: "Run a static scan"
+  #       run: ./veracode static scan test.zip
+  #       env:
+  #          VERACODE_API_KEY_ID: ${{ secrets.VERACODE_API_ID }}
+  #          VERACODE_API_KEY_SECRET: ${{ secrets.VERACODE_API_KEY }}
+  #     - name: import flaws as issues
+  #       if: ${{ always()  }}
+  #       uses: veracode/veracode-flaws-to-issues@v2.1.19
+  #       with:
+  #         scan-results-json: 'filtered_results.json'
+  #         github-token: ${{ secrets.PRIVATE_TOKEN }}
 
 
-#    steps:
-#      - name: "checkout repo"
-#        uses: actions/checkout@v3
-#      - name: "get archive"
-#        uses: actions/download-artifact@v3
-#        with:
-#          name: "test.zip"
-#      - name: "Set up JDK 1.8"
-#        uses: actions/setup-java@v1
-#        with:
-#          java-version: 1.8
-#      - name: "Download the Pipeline Scanner"
-#        uses: wei/curl@master
-#        with:
-#          args: -O https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip
-#      - name: "Unzip the Pipeline Scanner"
-#        run: unzip -qq -n pipeline-scan-LATEST.zip
-#      - name: "Run Pipeline Scanner"
-#        run: java -Dpipeline.debug=true -jar pipeline-scan.jar
-#         --veracode_api_id "${{secrets.VERACODE_API_ID}}"
-#         --veracode_api_key "${{secrets.VERACODE_API_KEY}}"
-#         --file "test.zip"
-#         --fail_on_severity="Very High, High, Medium"
+  #    steps:
+  #      - name: "checkout repo"
+  #        uses: actions/checkout@v3
+  #      - name: "get archive"
+  #        uses: actions/download-artifact@v3
+  #        with:
+  #          name: "test.zip"
+  #      - name: "Set up JDK 1.8"
+  #        uses: actions/setup-java@v1
+  #        with:
+  #          java-version: 1.8
+  #      - name: "Download the Pipeline Scanner"
+  #        uses: wei/curl@master
+  #        with:
+  #          args: -O https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip
+  #      - name: "Unzip the Pipeline Scanner"
+  #        run: unzip -qq -n pipeline-scan-LATEST.zip
+  #      - name: "Run Pipeline Scanner"
+  #        run: java -Dpipeline.debug=true -jar pipeline-scan.jar
+  #         --veracode_api_id "${{secrets.VERACODE_API_ID}}"
+  #         --veracode_api_key "${{secrets.VERACODE_API_KEY}}"
+  #         --file "test.zip"
+  #         --fail_on_severity="Very High, High, Medium"
 
   sast-issues:
     name: "SAST Results to Issues"
-    needs: [security_sca, security_sast]
+    needs: [ security_sca, security_sast ]
     if: ${{ always()  }}
     runs-on: ubuntu-latest
     steps:
