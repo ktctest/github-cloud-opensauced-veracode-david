@@ -58,21 +58,19 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: create new package-lock.json
-        run: npm install
-      - name: ZIP source folder
-        run: zip -r app.zip src package-lock.json
-      - name: Run Veracode Policy scan
-        uses: veracode/veracode-uploadandscan-action@0.2.6
+      - name: Convert pipeline scan output to SARIF format
+        id: convert
+        uses: Veracode/veracode-pipeline-scan-results-to-sarif@v1.0.7
         with:
-          appname: 'GitHub Pipeline Scan to Sarif Action'
-          createprofile: false
-          filepath: 'app.zip'
-          scantimeout: 30
-          vid: '${{ secrets.API_ID }}'
-          vkey: '${{ secrets.API_KEY }}'
+          pipeline-results-json: results.json
+          output-results-sarif: veracode-results.sarif
+          source-base-path-1: "^com/veracode:src/main/java/com/veracode"
+          source-base-path-2: "^WEB-INF:src/main/webapp/WEB-INF"
+
+      - name: upload sarif file to repository
+        uses: github/codeql-action/upload-sarif@v2
+        with: # Path to SARIF file relative to the root of the repository
+          sarif_file: veracode-results.sarif
 
 ##    container:
 ##      image: veracode/api-signing:latest
