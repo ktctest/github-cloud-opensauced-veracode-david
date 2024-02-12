@@ -41,12 +41,17 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - name: "checkout repo"
+      - name: Checkout
         uses: actions/checkout@v3
-      - name: "run Veracode SCA"
+
+      - name: Run Veracode SCA
         env:
           SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
-        uses: veracode/veracode-sca@v2.1.9
+        uses: veracode/veracode-sca@v2.1.10
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          quick: false
+          create-issues: true
 
   security_sast:
     name: "Veracode SAST Scan"
