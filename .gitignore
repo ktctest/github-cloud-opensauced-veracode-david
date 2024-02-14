@@ -276,3 +276,4 @@ build
 **/__snapshots__
 .env*
 !.env
+/.github/ISSUE_TEMPLATE/
