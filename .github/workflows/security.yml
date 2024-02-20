@@ -1,0 +1,98 @@
+name: Security
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  veracode-sca-scan:
+    name: Veracode Component Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: ${{ github.event.client_payload.repository.full_name }}
+          ref: ${{ github.event.client_payload.sha }}
+          token: ${{ github.event.client_payload.token }}
+      - name: Run Veracode SCA
+        env:
+          SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
+        uses: veracode/veracode-sca@v2.1.9
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          create-issues: true
+  #           fail-on-cvss: 1
+  #           min-cvss-for-issue: 1
+
+  veracode-sast-upload:
+    runs-on: ubuntu-latest
+    name: Veracode Static Application Security Testing
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v3
+      # get the compiled binary from a previous job
+      - name: get archive
+        uses: actions/download-artifact@v3
+        with:
+          name: veracode-artifact
+          path: ./veracode_artifact_directory
+      - name: Get the name of the downloaded files
+        run: |
+          artifact_file=$(ls -1 ./veracode_artifact_directory | head -n 1)
+          echo "veracode_artifact=$artifact_file" >> $GITHUB_ENV
+      # run the pipeline upload scan action to see results in Veracode Analysis Center
+      - name: Veracode Pipeline-Scan
+        id: pipeline-scan
+        uses: veracode/veracode-uploadandscan-action@0.2.6
+        with:
+          appname: 'david-cicd-test'
+          createprofile: false
+          filepath: ./veracode_artifact_directory/${{ env.veracode_artifact }}
+          vid: "${{ secrets.VERACODE_API_ID }}"
+          vkey: "${{ secrets.VERACODE_API_KEY }}"
+        # Delete a scan of any status except Results Ready to proceed with the uploadandscan action.
+        # If errors occur when running this action, the Java wrapper automatically deletes the incomplete scan.
+          deleteincompletescan: 2
+
+  # run pipeline scan to get flaws, which will be imported as GitHub issues
+  veracode-sast-to-issues:
+    runs-on: ubuntu-latest
+    name: Veracode Static Application Security Testing with Flaws to Issues
+    permissions:
+      issues: write
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v3
+
+      # get the compiled binary from a previous job
+      - name: get archive
+        uses: actions/download-artifact@v3
+        with:
+          name: veracode-artifact
+          path: ./veracode_artifact_directory
+
+      - name: Get the name of the downloaded files
+        run: |
+          artifact_file=$(ls -1 ./veracode_artifact_directory | head -n 1)
+          echo "veracode_artifact=$artifact_file" >> $GITHUB_ENV
+
+      # run the pipeline scan action
+      - name: Veracode Pipeline-Scan
+        id: pipeline-scan
+        uses: veracode/Veracode-pipeline-scan-action@v1.0.10
+        with:
+          vid: "${{ secrets.VERACODE_API_ID }}"
+          vkey: "${{ secrets.VERACODE_API_KEY }}"
+          veracode_policy_name: "${{ inputs.policy_name }}"
+          file: ./veracode_artifact_directory/${{ env.veracode_artifact }}
+          # Must be false, so the import-issues job can create issues, and fail upon findings.
+          fail_build: false
+
+      # import flaws to issues
+      - name: import flaws as issues
+        uses: veracode/veracode-flaws-to-issues@v2.1.19
+        with:
+          scan-results-json: 'results.json'
+          # must be true to fail upon issue creation
+          fail_build: true
