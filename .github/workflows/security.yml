@@ -6,8 +6,8 @@ on:
       - main
 
 jobs:
-  veracode-sca-scan:
-    name: Veracode Component Analysis
+  sca-scan:
+    name: SCA Scan
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -25,9 +25,9 @@ jobs:
   #           fail-on-cvss: 1
   #           min-cvss-for-issue: 1
 
-  veracode-sast-upload:
+  sast-upload:
     runs-on: ubuntu-latest
-    name: Veracode Static Application Security Testing
+    name: SAST Upload Scan
     steps:
       - name: checkout repo
         uses: actions/checkout@v3
@@ -56,9 +56,9 @@ jobs:
           deleteincompletescan: 2
 
   # run pipeline scan to get flaws, which will be imported as GitHub issues
-  veracode-sast-to-issues:
+  sast-to-issues:
     runs-on: ubuntu-latest
-    name: Veracode Static Application Security Testing with Flaws to Issues
+    name: SAST Scan to Issues
     permissions:
       issues: write
     steps:
@@ -96,3 +96,4 @@ jobs:
           scan-results-json: 'results.json'
           # must be true to fail upon issue creation
           fail_build: true
+
