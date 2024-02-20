@@ -26,6 +26,7 @@ jobs:
 
   sca-scan:
     name: SCA Scan
+    needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -44,8 +45,9 @@ jobs:
   #           min-cvss-for-issue: 1
 
   sast-upload:
-    runs-on: ubuntu-latest
     name: SAST Upload Scan
+    needs: setup
+    runs-on: ubuntu-latest
     steps:
       - name: checkout repo
         uses: actions/checkout@v3
@@ -75,8 +77,9 @@ jobs:
 
   # run pipeline scan to get flaws, which will be imported as GitHub issues
   sast-to-issues:
-    runs-on: ubuntu-latest
     name: SAST Scan to Issues
+    needs: setup
+    runs-on: ubuntu-latest
     permissions:
       issues: write
     steps:
