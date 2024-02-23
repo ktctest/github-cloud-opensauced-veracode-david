@@ -52,7 +52,8 @@ jobs:
         uses: actions/checkout@v3
       # create artifact for SAST Scan
       - name: "create artifact"
-        uses: zip -R veracode-artifacts.zip '*.py' '*.html' '*.htm' '*.js' '*.php' 'requirements.txt' '*.json' '*.lock' '*.ts' '*.pl' '*.pm' '*.plx' '*.pl5' '*.cgi' '*.go' '*.sum' '*.mod'
+        run: |
+          zip -R veracode-artifacts.zip '*.py' '*.html' '*.htm' '*.js' '*.php' 'requirements.txt' '*.json' '*.lock' '*.ts' '*.pl' '*.pm' '*.plx' '*.pl5' '*.cgi' '*.go' '*.sum' '*.mod'
 
       # get the compiled binary from a previous job
 #      - name: get archive
