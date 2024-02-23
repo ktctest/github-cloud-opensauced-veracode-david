@@ -43,7 +43,7 @@ jobs:
 
   veracode-build-source:
     # Veracode build source from JavaScript code
-    name: checkout repo
+    name: veracode build source
     needs: [ setup ]
     runs-on: ubuntu-latest
     steps:
