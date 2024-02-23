@@ -29,10 +29,12 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: Run Veracode SCA
         env:
           SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
-        uses: veracode/veracode-sca@v2.1.9
+        uses: veracode/veracode-sca@v2.1.11
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           create-issues: true
