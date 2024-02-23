@@ -52,8 +52,8 @@ jobs:
       - name: "Zip directory"
         uses: montudor/action-zip@v1
         with:
-          args: zip -R artifact.zip '*.py' '*.html' '*.htm' '*.js' '*.php' 'requirements.txt' '*.json' '*.lock' '*.ts' '*.pl' '*.pm' '*.plx' '*.pl5' '*.cgi' '*.go' '*.sum' '*.mod'
-          
+          args: zip -R veracode-artifact.zip /home/runner/work/github-cloud-opensauced-veracode-david/github-cloud-opensauced-veracode-david/ '*.py' '*.html' '*.htm' '*.js' '*.php' 'requirements.txt' '*.json' '*.lock' '*.ts' '*.pl' '*.pm' '*.plx' '*.pl5' '*.cgi' '*.go' '*.sum' '*.mod'
+
       # get the compiled binary from a previous job
 #      - name: get archive
 #        uses: actions/download-artifact@v3
@@ -92,7 +92,7 @@ jobs:
       - name: "Zip directory"
         uses: montudor/action-zip@v1
         with:
-          args: zip -R artifact.zip '*.py' '*.html' '*.htm' '*.js' '*.php' 'requirements.txt' '*.json' '*.lock' '*.ts' '*.pl' '*.pm' '*.plx' '*.pl5' '*.cgi' '*.go' '*.sum' '*.mod'
+          args: zip -R veracode-artifact.zip /home/runner/work/github-cloud-opensauced-veracode-david/github-cloud-opensauced-veracode-david '*.py' '*.html' '*.htm' '*.js' '*.php' 'requirements.txt' '*.json' '*.lock' '*.ts' '*.pl' '*.pm' '*.plx' '*.pl5' '*.cgi' '*.go' '*.sum' '*.mod'
 
 #      # get the compiled binary from a previous job
 #      - name: get archive
