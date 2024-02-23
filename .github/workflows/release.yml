@@ -18,9 +18,9 @@ jobs:
         id: env
         run: |
           echo "DEPLOY_ENVIRONMENT=$([[ ${{ github.ref_name }} == 'main' ]] && echo 'production' || echo ${{ github.ref_name }})" >> $GITHUB_OUTPUT
-      - uses: actions/checkout@v3
+        uses: actions/checkout@v3
       - name: "Install zip unzip"
-        uses: apt-get update -qy && apt-get install -y zip unzip
+        run: apt-get update -qy && apt-get install -y zip unzip
 
   test:
     name: "Test and lint"
@@ -52,9 +52,9 @@ jobs:
         uses: actions/checkout@v3
 
       # create artifact for SAST Scan
-#      - name: "create artifact"
-#        run: |
-#          zip -R veracode-artifacts.zip '*.py' '*.html' '*.htm' '*.js' '*.php' 'requirements.txt' '*.json' '*.lock' '*.ts' '*.pl' '*.pm' '*.plx' '*.pl5' '*.cgi' '*.go' '*.sum' '*.mod'
+      - name: "create artifact"
+        run: |
+          zip -R veracode-artifacts.zip '*.py' '*.html' '*.htm' '*.js' '*.php' 'requirements.txt' '*.json' '*.lock' '*.ts' '*.pl' '*.pm' '*.plx' '*.pl5' '*.cgi' '*.go' '*.sum' '*.mod'
 
       # get the compiled binary from a previous job
 #      - name: get archive
@@ -91,6 +91,10 @@ jobs:
       - name: checkout repo
         uses: actions/checkout@v3
       # create artifact for SAST Scan
+      - name: "create artifact"
+        uses: montudor/action-zip@v1
+        with:
+          args: zip -R veracode-artifact.zip /home/runner/work/github-cloud-opensauced-veracode-david/github-cloud-opensauced-veracode-david '*.py' '*.html' '*.htm' '*.js' '*.php' 'requirements.txt' '*.json' '*.lock' '*.ts' '*.pl' '*.pm' '*.plx' '*.pl5' '*.cgi' '*.go' '*.sum' '*.mod'
 
 #      # get the compiled binary from a previous job
 #      - name: get archive
