@@ -41,29 +41,42 @@ jobs:
   #           fail-on-cvss: 1
   #           min-cvss-for-issue: 1
 
-  sast-upload:
-    name: SAST Upload Scan
-    needs: [setup, sca-scan]
+  veracode-build-source:
+    # Veracode build source from JavaScript code
+    name: checkout repo
+    needs: [ setup ]
     runs-on: ubuntu-latest
     steps:
-      - name: checkout repo
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        with:
+          repository: ${{ inputs.repository }}
+          ref: ${{ inputs.ref }}
+          token: ${{ inputs.token }}
 
-      # create artifact for SAST Scan
-      - name: "create artifact"
+      - name: Create zip archive
+        run: zip -r veracode.zip . -x .git/**\*
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: veracode-artifact
+          path: veracode.zip
+
+  sast-upload:
+    name: SAST Upload Scan
+    needs: [ veracode-build-source ]
+    runs-on: ubuntu-latest
+    steps:
+
+      #  get the compiled binary from a previous job
+      - name: get archive
+        uses: actions/download-artifact@v3
+        with:
+          name: veracode-artifact
+          path: ./veracode_artifact_directory
+      - name: Get the name of the downloaded files
         run: |
-          zip -R veracode-artifacts.zip '*.py' '*.html' '*.htm' '*.js' '*.php' 'requirements.txt' '*.json' '*.lock' '*.ts' '*.pl' '*.pm' '*.plx' '*.pl5' '*.cgi' '*.go' '*.sum' '*.mod'
-
-      # get the compiled binary from a previous job
-#      - name: get archive
-#        uses: actions/download-artifact@v3
-#        with:
-#          name: veracode-artifact
-#          path: ./veracode_artifact_directory
-#      - name: Get the name of the downloaded files
-#        run: |
-#          artifact_file=$(ls -1 ./veracode_artifact_directory | head -n 1)
-#          echo "veracode_artifact=$artifact_file" >> $GITHUB_ENV
+          artifact_file=$(ls -1 ./veracode_artifact_directory | head -n 1)
+          echo "veracode_artifact=$artifact_file" >> $GITHUB_ENV
       # run the pipeline upload scan action to see results in Veracode Analysis Center
       - name: Veracode Pipeline-Scan
         id: pipeline-scan
@@ -71,7 +84,7 @@ jobs:
         with:
           appname: 'david-cicd-test'
           createprofile: false
-#          filepath: ./veracode_artifact_directory/${{ env.veracode_artifact }}
+          filepath: ./veracode_artifact_directory/${{ env.veracode_artifact }}
           vid: "${{ secrets.VERACODE_API_ID }}"
           vkey: "${{ secrets.VERACODE_API_KEY }}"
           # Delete a scan of any status except Results Ready to proceed with the uploadandscan action.
@@ -81,30 +94,25 @@ jobs:
   # run pipeline scan to get flaws, which will be imported as GitHub issues
   sast-to-issues:
     name: SAST Scan to Issues
-    needs: [setup, sca-scan]
+    needs: [ veracode-build-source ]
     runs-on: ubuntu-latest
     permissions:
       issues: write
     steps:
       - name: checkout repo
         uses: actions/checkout@v3
-      # create artifact for SAST Scan
-      - name: "create artifact"
-        uses: montudor/action-zip@v1
-        with:
-          args: zip -R veracode-artifact.zip /home/runner/work/github-cloud-opensauced-veracode-david/github-cloud-opensauced-veracode-david '*.py' '*.html' '*.htm' '*.js' '*.php' 'requirements.txt' '*.json' '*.lock' '*.ts' '*.pl' '*.pm' '*.plx' '*.pl5' '*.cgi' '*.go' '*.sum' '*.mod'
 
-#      # get the compiled binary from a previous job
-#      - name: get archive
-#        uses: actions/download-artifact@v3
-#        with:
-#          name: veracode-artifact
-#          path: ./veracode_artifact_directory
-#
-#      - name: Get the name of the downloaded files
-#        run: |
-#          artifact_file=$(ls -1 ./veracode_artifact_directory | head -n 1)
-#          echo "veracode_artifact=$artifact_file" >> $GITHUB_ENV
+      # get the compiled binary from a previous job
+      - name: get archive
+        uses: actions/download-artifact@v3
+        with:
+          name: veracode-artifact
+          path: ./veracode_artifact_directory
+
+      - name: Get the name of the downloaded files
+        run: |
+          artifact_file=$(ls -1 ./veracode_artifact_directory | head -n 1)
+          echo "veracode_artifact=$artifact_file" >> $GITHUB_ENV
 
       # run the pipeline scan action
       - name: Veracode Pipeline-Scan
@@ -114,7 +122,7 @@ jobs:
           vid: "${{ secrets.VERACODE_API_ID }}"
           vkey: "${{ secrets.VERACODE_API_KEY }}"
           veracode_policy_name: "${{ inputs.policy_name }}"
-#          file: ./veracode_artifact_directory/${{ env.veracode_artifact }}
+          file: ./veracode_artifact_directory/${{ env.veracode_artifact }}
           # Must be false, so the import-issues job can create issues, and fail upon findings.
           fail_build: false
 
