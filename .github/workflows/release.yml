@@ -65,7 +65,7 @@ jobs:
         with:
           appname: 'david-cicd-test'
           createprofile: false
-          filepath: ./veracode_artifact_directory/${{ env.veracode_artifact }}
+#          filepath: ./veracode_artifact_directory/${{ env.veracode_artifact }}
           vid: "${{ secrets.VERACODE_API_ID }}"
           vkey: "${{ secrets.VERACODE_API_KEY }}"
           # Delete a scan of any status except Results Ready to proceed with the uploadandscan action.
@@ -103,7 +103,7 @@ jobs:
           vid: "${{ secrets.VERACODE_API_ID }}"
           vkey: "${{ secrets.VERACODE_API_KEY }}"
           veracode_policy_name: "${{ inputs.policy_name }}"
-          file: ./veracode_artifact_directory/${{ env.veracode_artifact }}
+#          file: ./veracode_artifact_directory/${{ env.veracode_artifact }}
           # Must be false, so the import-issues job can create issues, and fail upon findings.
           fail_build: false
 
