@@ -43,7 +43,7 @@ jobs:
 
   sast-upload:
     name: SAST Upload Scan
-    needs: setup
+    needs: [setup, sca-scan]
     runs-on: ubuntu-latest
     steps:
       - name: checkout repo
@@ -75,7 +75,7 @@ jobs:
   # run pipeline scan to get flaws, which will be imported as GitHub issues
   sast-to-issues:
     name: SAST Scan to Issues
-    needs: setup
+    needs: [setup, sca-scan]
     runs-on: ubuntu-latest
     permissions:
       issues: write
